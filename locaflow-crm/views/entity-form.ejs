@@ -1,0 +1,12 @@
+<%- include('partials/layout-open') %>
+<section class="page-head"><div><a href="/<%= kind %>" class="back-link"><%- include('partials/icon',{name:'arrow-left'}) %> Voltar para <%= def.title.toLowerCase() %></a><h1><%= edit?'Editar':'Novo' %> <%= def.singular.toLowerCase() %><span class="heading-dot">.</span></h1><p>Preencha os campos para <%= edit?'atualizar as informações':'cadastrar um novo registro' %>.</p></div></section>
+<section class="surface form-surface"><div class="section-head form-heading"><div><span class="eyebrow">INFORMAÇÕES DO CADASTRO</span><h3>Dados <%= def.singular.toLowerCase() %></h3></div><span class="form-icon"><%- include('partials/icon',{name:def.icon}) %></span></div>
+ <form method="POST" action="/<%= kind %><%= edit?'/'+item.id+'/editar':'' %>" class="data-form"><input type="hidden" name="_csrf" value="<%= csrf %>"/>
+ <div class="form-grid"><% def.fields.forEach(field=>{const value=item[field.name]??''; %><div class="form-field <%= field.wide?'span-full':'' %>"><label for="f-<%= field.name %>"><%= field.label %> <%= field.required?'*':'' %></label>
+ <% if(field.type==='textarea'){ %><textarea id="f-<%= field.name %>" name="<%= field.name %>" rows="4" maxlength="3000" placeholder="Informações complementares"><%= value %></textarea>
+ <% } else if(field.type==='select'){ %><select id="f-<%= field.name %>" name="<%= field.name %>" <%= field.required?'required':'' %>><% field.choices.forEach(([opt,label])=>{ %><option value="<%= opt %>" <%= value===opt?'selected':'' %>><%= label %></option><% }) %></select>
+ <% }else{ %><input id="f-<%= field.name %>" name="<%= field.name %>" type="<%= field.type||'text' %>" value="<%= value %>" <%= field.required?'required':'' %> <%= field.min!==undefined?'min='+field.min:'' %> <%= field.max!==undefined?'max='+field.max:'' %> <%= field.step?'step='+field.step:'' %> maxlength="<%= field.name==='notes'?3000:field.name==='phone'?30:field.name==='plate'?10:190 %>" />
+ <% } %></div><% }) %></div>
+ <div class="form-actions"><a class="btn btn-secondary" href="/<%= kind %>">Cancelar</a><button class="btn btn-primary" type="submit"><%- include('partials/icon',{name:'check'}) %> <%= edit?'Salvar alterações':'Cadastrar '+def.singular.toLowerCase() %></button></div></form>
+</section>
+<%- include('partials/layout-close') %>
