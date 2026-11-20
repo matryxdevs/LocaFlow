@@ -1,0 +1,28 @@
+<%- include('head') %>
+<body class="app-body">
+ <div class="app-shell">
+ <aside class="sidebar" id="sidebar">
+  <a href="/" class="brand"><span class="brand-mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 17.5 11 6l4.2 7H21" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.6" cy="18.4" r="2.7" fill="currentColor"/></svg></span><span>locaflow<small>CRM PARA LOCADORAS</small></span></a>
+  <p class="nav-caption">PAINEL DE CONTROLE</p>
+  <nav class="side-nav" aria-label="Menu principal">
+  <% if(currentUser.role==='superadmin'){ %>
+   <a class="nav-link <%= nav==='companies'?'active':'' %>" href="/empresas"><%- include('icon',{name:'building'}) %><span>Empresas</span></a>
+  <% }else{ %>
+   <a class="nav-link <%= nav==='dashboard'?'active':'' %>" href="/dashboard"><%- include('icon',{name:'dashboard'}) %><span>Visão geral</span></a>
+   <a class="nav-link <%= nav==='leads'?'active':'' %>" href="/leads"><%- include('icon',{name:'target'}) %><span>Oportunidades</span></a>
+   <a class="nav-link <%= nav==='clients'?'active':'' %>" href="/clients"><%- include('icon',{name:'users'}) %><span>Clientes</span></a>
+   <a class="nav-link <%= nav==='vehicles'?'active':'' %>" href="/vehicles"><%- include('icon',{name:'car'}) %><span>Frota</span></a>
+   <a class="nav-link <%= nav==='rentals'?'active':'' %>" href="/locacoes"><%- include('icon',{name:'key'}) %><span>Locações</span></a>
+   <% if(currentUser.role==='company_admin'){ %><a class="nav-link <%= nav==='team'?'active':'' %>" href="/equipe"><%- include('icon',{name:'building'}) %><span>Equipe</span></a><% } %>
+  <% } %>
+  </nav>
+  <div class="side-bottom">
+   <a class="nav-link <%= nav==='account'?'active':'' %>" href="/conta"><%- include('icon',{name:'lock'}) %><span>Minha conta</span></a>
+   <div class="side-security"><span class="security-icon"><%- include('icon',{name:'shield'}) %></span><div><strong>Ambiente protegido</strong><span>Acesso controlado por perfil</span></div></div>
+   <div class="side-profile"><span class="avatar"><%= currentUser.full_name.slice(0,1).toUpperCase() %></span><div class="profile-info"><strong><%= currentUser.full_name %></strong><span><%= currentUser.role==='superadmin'?'Administrador geral':currentUser.role==='company_admin'?'Gestor da locadora':'Atendimento' %></span></div><form method="POST" action="/logout"><input type="hidden" name="_csrf" value="<%= csrf %>"/><button type="submit" class="logout-button" title="Sair da conta" aria-label="Sair da conta"><%- include('icon',{name:'logout'}) %></button></form></div>
+  </div>
+ </aside>
+ <div class="main-wrap">
+  <header class="topbar"><div class="topbar-left"><button class="icon-button mobile-menu" id="menu-button" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar"><%- include('icon',{name:'menu'}) %></button><span class="breadcrumb">Workspace <span>/</span> <strong><%= title %></strong></span></div><div class="topbar-right"><span class="live-dot"></span><span class="topbar-company"><%= currentUser.role==='superadmin'?'Administração da plataforma':currentUser.company_name %></span><span class="topbar-avatar"><%= currentUser.full_name.slice(0,1).toUpperCase() %></span></div></header>
+  <main class="content">
+  <% if(query.created==='1'||query.updated==='1'||query.deleted==='1'){ %><div class="toast-success" role="status"><%- include('icon',{name:'check'}) %><span><%= query.created==='1'?'Registro criado com sucesso.':query.deleted==='1'?'Registro excluído com sucesso.':'Alterações salvas com sucesso.' %></span></div><% } %>
